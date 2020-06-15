@@ -35,16 +35,13 @@ d3.json("samples.json").then(function(data) {
     var otuIds = data.samples[0].otu_ids.slice(0,10).reverse();
     // OTU Label
     var otuLabels = data.samples[0].otu_labels.slice(0,10).reverse();
-    /////////
-    // Need to get OTU labels for y axis //
-    /////////
+
     barData = [{
         x: topSampleValues, 
-        y: `OTU ${otuIds}`,
+        y: otuIds,
         type: 'bar',
         orientation:'h',
         text: otuLabels,
-        label: otuIds
     }];
 
     layout = {
@@ -57,11 +54,14 @@ d3.json("samples.json").then(function(data) {
         },
         yaxis: {
             title: "OTU",
+            type:'category',
             automargin: true
         }
     };
 
     Plotly.newPlot("bar",barData,layout);
+    // Bar Chart Complete 
+    /////
 
 
     
