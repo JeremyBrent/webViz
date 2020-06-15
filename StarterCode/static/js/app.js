@@ -76,7 +76,7 @@ d3.json("samples.json").then(function(data) {
     //////
     // Bubble Chart 
     /////
-    bubbleData = [{
+    var bubbleData = [{
         x: otuIds,
         y: sampleValues,
         mode: 'markers',
@@ -87,7 +87,7 @@ d3.json("samples.json").then(function(data) {
         text: otuLabels
     }];
 
-    layout = {
+    var layout = {
         title: `All Bacterial Samples in Subject ${dropDownValue}`,
         xaxis: {
             title: "OTU Ids"
@@ -147,6 +147,87 @@ function optionChanged () {
             .forEach(([key,value]) => metaDataDiv.append("p").html( `<strong>${key.toUpperCase()}:</strong> ${value}`))
         // Demographic info complete
         /////
+
+
+        //////
+        // Bar Chart 
+        /////
+        var sample = data.samples.filter(d => d.id == dropDownValue)[0];
+        // Sample Values
+        var sampleValues = sample.sample_values;
+        var topSampleValues = sampleValues.slice(0,10).reverse();
+        // // OTU ID
+        var otuIds = sample.otu_ids;
+        var topOtuIds = otuIds.slice(0,10).reverse();
+        // // OTU Label
+        var otuLabels = sample.otu_labels;
+        var topOtuLabels = otuLabels.slice(0,10).reverse();
+
+        var update = {
+            x: [topSampleValues], 
+            y: [topOtuIds],
+            text: [topOtuLabels]
+        };
+
+        Plotly.restyle("bar",update);
+
+        var update = { 
+            title:  `Top ten species in Subject ${dropDownValue}`,
+            yaxis: {
+                type:'category',
+                title: "OTU",
+                automargin:true
+            },
+            xaxis:{
+                automargin:true
+            }
+        }
+        Plotly.relayout("bar",update)
+        // Bar Chart Complete 
+        //////
+
+
+        //////
+        // Guage Chart 
+        /////
+        var update = {
+                value: data.metadata.filter(d => d.id == dropDownValue)[0].wfreq
+            };
+    
+        Plotly.restyle('gauge', update);
+        // Gauge Chart Complete 
+        /////
+
+
+        //////
+        // Bubble Chart 
+        /////
+        var update = {
+            x: [otuIds],
+            y: [sampleValues],
+            marker: {
+                size: sampleValues,
+                color: otuIds,
+            },
+            text: otuLabels
+        };
+
+        Plotly.restyle("bubble",update);
+
+        var update = {
+            title: `All Bacterial Samples in Subject ${dropDownValue}`,
+            yaxis: {
+                automargin:true,
+                title: "Sample Values"
+            },
+            xaxis:{
+                automargin:true,
+                title: "OTU Ids"
+            }
+        };
+
+        Plotly.relayout("bubble",update);
+        // Bubble Chart Complete 
+        /////
 })
 }
-
