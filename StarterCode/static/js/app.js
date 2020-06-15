@@ -1,8 +1,6 @@
 d3.json("samples.json").then(function(data) {
-    console.log(data);
-    var names = data.names;
-    // console.log(names);
-    
+    const dataSet = data
+    console.log(dataSet)
     /////
     // Demographic info 
     /////
@@ -19,6 +17,7 @@ d3.json("samples.json").then(function(data) {
     var dropDown = d3.select("#selDataset");
     
     // adding each name label to the dropdown menu
+    var names = data.names;
     names.forEach((name) => dropDown.append("option").text(name).attr('value',name));
 
     var dropDownValue = dropDown.node().value;
@@ -131,4 +130,23 @@ d3.json("samples.json").then(function(data) {
     // Gauge Chart Complete 
     /////
 });
+
+
+function optionChanged () {
+    d3.json("samples.json").then(function(data) {
+        var dropDown = d3.select("#selDataset");
+        var dropDownValue = dropDown.node().value;
+        
+        /////
+        // Demographic info 
+        /////
+        var metaData = data.metadata.filter(d => d.id == dropDownValue)[0];
+        console.log(metaData)
+        var metaDataDiv = d3.select("#sample-metadata").text("")
+        Object.entries(metaData)
+            .forEach(([key,value]) => metaDataDiv.append("p").html( `<strong>${key.toUpperCase()}:</strong> ${value}`))
+        // Demographic info complete
+        /////
+})
+}
 
