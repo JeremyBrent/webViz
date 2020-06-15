@@ -1,10 +1,12 @@
 d3.json("samples.json").then(function(data) {
     const dataSet = data
     console.log(dataSet)
+    
     /////
     // Demographic info 
     /////
     var metaData = data.metadata[0]
+    console.log(metaData)
     var metaDataDiv = d3.select("#sample-metadata")
     Object.entries(metaData)
         .forEach(([key,value]) => metaDataDiv.append("p").html( `<strong>${key.toUpperCase()}:</strong> ${value}`))
@@ -179,7 +181,8 @@ function optionChanged () {
                 automargin:true
             },
             xaxis:{
-                automargin:true
+                automargin:true,
+                title:"Sample Values"
             }
         }
         Plotly.relayout("bar",update)
