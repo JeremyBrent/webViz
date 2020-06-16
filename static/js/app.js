@@ -1,7 +1,7 @@
-d3.json("samples.json").then(function(data) {
+d3.json("../StarterCode/samples.json").then(function (data) {
     const dataSet = data
     console.log(dataSet)
-    
+
     /////
     // Demographic info 
     /////
@@ -9,7 +9,7 @@ d3.json("samples.json").then(function(data) {
     console.log(metaData)
     var metaDataDiv = d3.select("#sample-metadata")
     Object.entries(metaData)
-        .forEach(([key,value]) => metaDataDiv.append("p").html( `<strong>${key.toUpperCase()}:</strong> ${value}`))
+        .forEach(([key, value]) => metaDataDiv.append("p").html(`<strong>${key.toUpperCase()}:</strong> ${value}`))
     // Demographic info complete
     /////
 
@@ -17,10 +17,10 @@ d3.json("samples.json").then(function(data) {
     // Dropdown menu
     /////
     var dropDown = d3.select("#selDataset");
-    
+
     // adding each name label to the dropdown menu
     var names = data.names;
-    names.forEach((name) => dropDown.append("option").text(name).attr('value',name));
+    names.forEach((name) => dropDown.append("option").text(name).attr('value', name));
 
     var dropDownValue = dropDown.node().value;
     // Dropdown Menu Complete
@@ -31,26 +31,26 @@ d3.json("samples.json").then(function(data) {
     /////
     // Sample Values
     var sampleValues = data.samples[0].sample_values;
-    var sortSampleValues= sampleValues.sort((a,b) => b - a);
-    var topSampleValues = sortSampleValues.slice(0,10).reverse();
+    var sortSampleValues = sampleValues.sort((a, b) => b - a);
+    var topSampleValues = sortSampleValues.slice(0, 10).reverse();
     // OTU ID
     var otuIds = data.samples[0].otu_ids;
-    var topOtuIds = otuIds.slice(0,10).reverse();
+    var topOtuIds = otuIds.slice(0, 10).reverse();
     // OTU Label
     var otuLabels = data.samples[0].otu_labels;
-    var topOtuLabels = otuLabels.slice(0,10).reverse();
+    var topOtuLabels = otuLabels.slice(0, 10).reverse();
 
     barData = [{
-        x: topSampleValues, 
+        x: topSampleValues,
         y: topOtuIds,
         type: 'bar',
-        orientation:'h',
+        orientation: 'h',
         text: topOtuLabels,
         marker: {
             color: '#f5ac7b',
             line: {
                 color: '#d96149',
-                width: 1.5 
+                width: 1.5
             }
         }
     }];
@@ -65,13 +65,13 @@ d3.json("samples.json").then(function(data) {
         },
         yaxis: {
             title: "OTU",
-            type:'category',
+            type: 'category',
             automargin: true
         },
-        
+
     };
 
-    Plotly.newPlot("bar",barData,layout);
+    Plotly.newPlot("bar", barData, layout);
     // Bar Chart Complete 
     /////
 
@@ -99,7 +99,7 @@ d3.json("samples.json").then(function(data) {
         }
     }
 
-    Plotly.newPlot("bubble",bubbleData,layout)
+    Plotly.newPlot("bubble", bubbleData, layout)
     // Bubble Chart Complete 
     /////
 
@@ -114,19 +114,19 @@ d3.json("samples.json").then(function(data) {
             type: "indicator",
             mode: "gauge+number",
             gauge: {
-                axis: {range: [0,9]},
+                axis: { range: [0, 9] },
                 steps: [
                     { range: [0, 2], color: '#d96149' },
                     { range: [2, 4], color: "#F1FAEE" },
                     { range: [4, 6], color: "#A8DADC" },
                     { range: [6, 8], color: "#457B9D" },
                     { range: [8, 10], color: "#1D3557" }
-                  ],
-                bar: { color: '#f5ac7b'}
+                ],
+                bar: { color: '#f5ac7b' }
             }
         }
     ];
-    
+
     var layout = { width: 600, height: 500, margin: { t: 0, b: 0 } };
     Plotly.newPlot('gauge', data, layout);
     // Gauge Chart Complete 
@@ -134,11 +134,11 @@ d3.json("samples.json").then(function(data) {
 });
 
 
-function optionChanged () {
-    d3.json("samples.json").then(function(data) {
+function optionChanged() {
+    d3.json("../StarterCode/samples.json").then(function (data) {
         var dropDown = d3.select("#selDataset");
         var dropDownValue = dropDown.node().value;
-        
+
         /////
         // Demographic info 
         /////
@@ -146,7 +146,7 @@ function optionChanged () {
         console.log(metaData)
         var metaDataDiv = d3.select("#sample-metadata").text("")
         Object.entries(metaData)
-            .forEach(([key,value]) => metaDataDiv.append("p").html( `<strong>${key.toUpperCase()}:</strong> ${value}`))
+            .forEach(([key, value]) => metaDataDiv.append("p").html(`<strong>${key.toUpperCase()}:</strong> ${value}`))
         // Demographic info complete
         /////
 
@@ -157,35 +157,35 @@ function optionChanged () {
         var sample = data.samples.filter(d => d.id == dropDownValue)[0];
         // Sample Values
         var sampleValues = sample.sample_values;
-        var topSampleValues = sampleValues.slice(0,10).reverse();
+        var topSampleValues = sampleValues.slice(0, 10).reverse();
         // // OTU ID
         var otuIds = sample.otu_ids;
-        var topOtuIds = otuIds.slice(0,10).reverse();
+        var topOtuIds = otuIds.slice(0, 10).reverse();
         // // OTU Label
         var otuLabels = sample.otu_labels;
-        var topOtuLabels = otuLabels.slice(0,10).reverse();
+        var topOtuLabels = otuLabels.slice(0, 10).reverse();
 
         var update = {
-            x: [topSampleValues], 
+            x: [topSampleValues],
             y: [topOtuIds],
             text: [topOtuLabels]
         };
 
-        Plotly.restyle("bar",update);
+        Plotly.restyle("bar", update);
 
-        var update = { 
-            title:  `Top ten species in Subject ${dropDownValue}`,
+        var update = {
+            title: `Top ten species in Subject ${dropDownValue}`,
             yaxis: {
-                type:'category',
+                type: 'category',
                 title: "OTU",
-                automargin:true
+                automargin: true
             },
-            xaxis:{
-                automargin:true,
-                title:"Sample Values"
+            xaxis: {
+                automargin: true,
+                title: "Sample Values"
             }
         }
-        Plotly.relayout("bar",update)
+        Plotly.relayout("bar", update)
         // Bar Chart Complete 
         //////
 
@@ -194,9 +194,9 @@ function optionChanged () {
         // Guage Chart 
         /////
         var update = {
-                value: data.metadata.filter(d => d.id == dropDownValue)[0].wfreq
-            };
-    
+            value: data.metadata.filter(d => d.id == dropDownValue)[0].wfreq
+        };
+
         Plotly.restyle('gauge', update);
         // Gauge Chart Complete 
         /////
@@ -215,22 +215,22 @@ function optionChanged () {
             text: otuLabels
         };
 
-        Plotly.restyle("bubble",update);
+        Plotly.restyle("bubble", update);
 
         var update = {
             title: `All Bacterial Samples in Subject ${dropDownValue}`,
             yaxis: {
-                automargin:true,
+                automargin: true,
                 title: "Sample Values"
             },
-            xaxis:{
-                automargin:true,
+            xaxis: {
+                automargin: true,
                 title: "OTU Ids"
             }
         };
 
-        Plotly.relayout("bubble",update);
+        Plotly.relayout("bubble", update);
         // Bubble Chart Complete 
         /////
-})
+    })
 }
