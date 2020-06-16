@@ -1,4 +1,4 @@
-d3.json("../../data/samples.json").then(function (data) {
+d3.json("data/samples.json").then(function (data) {
     const dataSet = data
     console.log(dataSet)
 
@@ -135,7 +135,7 @@ d3.json("../../data/samples.json").then(function (data) {
 
 
 function optionChanged() {
-    d3.json("../data/samples.json").then(function (data) {
+    d3.json("data/samples.json").then(function (data) {
         var dropDown = d3.select("#selDataset");
         var dropDownValue = dropDown.node().value;
 
