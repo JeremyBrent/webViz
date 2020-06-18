@@ -2,3 +2,6 @@ Instructions.md
 Plotly_Grading_rubric.pdf
 Images/
 Heroku_Deployment_Guide.md
+.ipynb_checkpoints/
+__pycache__/
+

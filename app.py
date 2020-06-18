@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 
 from flask import Flask, jsonify, render_template
-from flask_sqlalchemy import SQLAlchemy
+
 
 app = Flask(__name__)
 
@@ -19,12 +19,12 @@ app = Flask(__name__)
 #################################################
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db/bellybutton.sqlite"
-db = SQLAlchemy(app)
+engine = create_engine("sqlite:///db/bellybutton.sqlite")
 
 # reflect an existing database into a new model
 Base = automap_base()
 # reflect the tables
-Base.prepare(db.engine, reflect=True)
+Base.prepare(engine, reflect=True)
 
 # Save references to each table
 Samples_Metadata = Base.classes.sample_metadata
@@ -40,10 +40,10 @@ def index():
 @app.route("/names")
 def names():
     """Return a list of sample names."""
-
+    session = Session(engine)
     # Use Pandas to perform the sql query
-    stmt = db.session.query(Samples).statement
-    df = pd.read_sql_query(stmt, db.session.bind)
+    stmt = session.query(Samples).statement
+    df = pd.read_sql_query(stmt, session.bind)
 
     # Return a list of the column names (sample names)
     return jsonify(list(df.columns)[2:])
@@ -52,6 +52,7 @@ def names():
 @app.route("/metadata/<sample>")
 def sample_metadata(sample):
     """Return the MetaData for a given sample."""
+    session = Session(engine)
     sel = [
         Samples_Metadata.sample,
         Samples_Metadata.ETHNICITY,
@@ -62,7 +63,7 @@ def sample_metadata(sample):
         Samples_Metadata.WFREQ,
     ]
 
-    results = db.session.query(*sel).filter(Samples_Metadata.sample == sample).all()
+    results = session.query(*sel).filter(Samples_Metadata.sample == sample).all()
 
     # Create a dictionary entry for each row of metadata information
     sample_metadata = {}
@@ -82,8 +83,9 @@ def sample_metadata(sample):
 @app.route("/samples/<sample>")
 def samples(sample):
     """Return `otu_ids`, `otu_labels`,and `sample_values`."""
-    stmt = db.session.query(Samples).statement
-    df = pd.read_sql_query(stmt, db.session.bind)
+    session = Session(engine)
+    stmt = session.query(Samples).statement
+    df = pd.read_sql_query(stmt, session.bind)
 
     # Filter the data based on the sample number and
     # only keep rows with values above 1
@@ -100,8 +102,9 @@ def samples(sample):
 @app.route("/wfreq/<sample>")
 def wfreq(sample):
     """Return washing frequency for sample."""
+    session = Session(engine)
     
-    result = db.session.query(Samples_Metadata.WFREQ).\
+    result = session.query(Samples_Metadata.WFREQ).\
         filter(Samples_Metadata.sample == sample).all()
     sample_wfreq = result[0]
     
